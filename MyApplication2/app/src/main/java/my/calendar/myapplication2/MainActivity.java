@@ -30,8 +30,6 @@ public class MainActivity extends Activity implements MyAdapter.ClickListener {
     private List<ToDoItem> toDoItems;
     private MyAdapter adapter;
     private Realm realm;
-    private List<NoteItem> noteItem;
-
 
     private SimpleDateFormat simpleDateFormat;
     private String date;
@@ -57,15 +55,13 @@ public class MainActivity extends Activity implements MyAdapter.ClickListener {
         });
         realm = Realm.getDefaultInstance();
         setUpView();
-        setNoteView((NoteItem) noteItem, date);
+        setNoteView(date);
     }
 
-    private void setNoteView(NoteItem noteItem, String date) {
-        String mynote = String.valueOf(realm.where(NoteItem.class).equalTo("date", noteItem.getDate()).findFirst());
+    private void setNoteView(String date) {
+        String mynote = String.valueOf(realm.where(NoteItem.class).equalTo("date", date).findFirst());
         noteTv.setText(mynote);
-
     }
-
 
     private void setUpView() {
         RecyclerView recycler = findViewById(R.id.recycler);
@@ -79,13 +75,9 @@ public class MainActivity extends Activity implements MyAdapter.ClickListener {
     }
 
     private void setUpItems() {
-        realm.beginTransaction();
         List<ToDoItem> items = realm.copyFromRealm(realm.where(ToDoItem.class).findAll());
         toDoItems.addAll(items);
         adapter.notifyDataSetChanged();
-//        realm.commitTransaction();
-
-
     }
 
     public void addButtonPressed(View view) {
@@ -150,7 +142,7 @@ public class MainActivity extends Activity implements MyAdapter.ClickListener {
         adapter.notifyDataSetChanged();
     }
 
-    public void noteBtnclick(View view) {
+    public void noteBtnClick(View view) {
         Intent intent = new Intent(MainActivity.this, AddNote.class);
         intent = intent.putExtra("date", date);
         startActivity(intent);

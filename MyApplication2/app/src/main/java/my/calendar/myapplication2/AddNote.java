@@ -77,8 +77,6 @@ public class AddNote extends Activity{
             }
         });
 
-
-
         realm.beginTransaction();
         Number autoIdNum = realm.where(NoteItem.class).max("id");
         int nextId;
@@ -100,5 +98,11 @@ public class AddNote extends Activity{
 
     public void saveBtnClick(View view) {
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
     }
 }
