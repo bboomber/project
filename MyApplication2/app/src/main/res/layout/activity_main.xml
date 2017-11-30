@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/feelingView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -137,13 +137,13 @@
             android:onClick="noteBtnclick"/>
 
 
-
         <Button
-            android:id="@+id/shareBtn"
+            android:id="@+id/todayBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="share"
+            android:onClick="todayBtnClick"
+            android:text="Today"
             tools:layout_editor_absoluteX="170dp"
             tools:layout_editor_absoluteY="476dp" />
     </LinearLayout>

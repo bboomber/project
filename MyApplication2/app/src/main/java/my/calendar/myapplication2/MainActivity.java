@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -34,6 +35,9 @@ public class MainActivity extends Activity implements MyAdapter.ClickListener {
     private SimpleDateFormat simpleDateFormat;
     private String date;
     private TextView noteTv;
+    ImageView feelingView;
+    int myfeeling = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,21 +49,55 @@ public class MainActivity extends Activity implements MyAdapter.ClickListener {
         date = simpleDateFormat.format(calendar.getTime());
         noteTv.setText(date);
 
+
         CalendarView mCalendarView = (CalendarView) findViewById(R.id.calendarView);
+//        mCalendarView.setDate(Calendar.getInstance().getTimeInMillis(),false,true);
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
                 date = i2 + "/" + (i1+1) + "/" + i;
                 noteTv.setText(date);
+                String mynote = String.valueOf(realm.where(NoteItem.class).equalTo("date", date).findFirst());
+                if (mynote.equals("null")){
+                    feelingView.setImageResource(R.drawable.happy);
+                } else{
+                    setNoteView(date);
+                    setfeeling(date);
+                }
             }
         });
+        myfeeling =0;
         realm = Realm.getDefaultInstance();
         setUpView();
-        setNoteView(date);
+
     }
 
+    private void setfeeling(String date) {
+        myfeeling = realm.where(NoteItem.class).equalTo("date", date).findFirst().getFeeling();
+        feelingView = findViewById(R.id.feelingView);
+        if (myfeeling == 0){
+            feelingView.setImageResource(R.drawable.happy);
+        }
+        if (myfeeling == 1){
+            feelingView.setImageResource(R.drawable.cry);
+        }
+        if (myfeeling == 2){
+            feelingView.setImageResource(R.drawable.bad);
+        }
+        if (myfeeling == 3){
+            feelingView.setImageResource(R.drawable.love);
+        }
+        if (myfeeling == 4){
+            feelingView.setImageResource(R.drawable.omg);
+        }
+        if (myfeeling == 5){
+            feelingView.setImageResource(R.drawable.sick);
+        }
+    }
+
+
     private void setNoteView(String date) {
-        String mynote = String.valueOf(realm.where(NoteItem.class).equalTo("date", date).findFirst());
+        String mynote = String.valueOf(realm.where(NoteItem.class).equalTo("date", date).findFirst().getNote());
         noteTv.setText(mynote);
     }
 
@@ -142,11 +180,15 @@ public class MainActivity extends Activity implements MyAdapter.ClickListener {
         adapter.notifyDataSetChanged();
     }
 
-    public void noteBtnClick(View view) {
+    public void noteBtnclick(View view) {
         Intent intent = new Intent(MainActivity.this, AddNote.class);
         intent = intent.putExtra("date", date);
         startActivity(intent);
     }
 
+    public void todayBtnClick(View view) {
+        CalendarView mCalendarView = (CalendarView) findViewById(R.id.calendarView);
+        mCalendarView.setDate(Calendar.getInstance().getTimeInMillis(),false,true);
 
+    }
 }
